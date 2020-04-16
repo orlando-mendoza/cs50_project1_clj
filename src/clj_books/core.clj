@@ -14,11 +14,15 @@
    :body "Goodbye, Cruel World!"
    :headers {}})
 
+(defn- yo-body
+  [name]
+  {:status 200
+        :body (str "Yo! " name)
+        :headers {}})
+
 (defn yo [req]
   (let [name (get-in req [:route-params :name])]
-       {:status 200
-        :body (str "Yo! " name)
-        :headers {}}))
+    (yo-body name)))
 
 (defn isbn [req]
   (let [isbn (get-in req [:route-params :isbn])]
@@ -29,6 +33,7 @@
   (GET "/goodbye" [] goodbye)
   (GET "/yo/:name" [] yo)
   (GET "/request" [] handle-dump)
+  (GET "/pijibaye" [] {:status 200 :body "Pijibaye Ridista" :headers {}})
   (not-found "Page not found"))
 
 (defn -main [port]

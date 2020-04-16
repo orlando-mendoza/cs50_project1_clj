@@ -6,7 +6,8 @@
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [ring "1.8.0"]
                  [compojure "1.6.1"]
-                 [selmer "1.12.17"]]
+                 [selmer "1.12.17"]
+                 [refactor-nrepl "2.0.0"]]
 
   :main ^:skip-aot clj-books.core
   :target-path "target/%s"
