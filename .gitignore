@@ -11,5 +11,6 @@ pom.xml.asc
 .hgignore
 .hg/
 /.idea
-.env
+.secrets.edn
+
 

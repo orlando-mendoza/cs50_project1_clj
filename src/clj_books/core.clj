@@ -3,32 +3,29 @@
             [ring.middleware.reload :refer [wrap-reload]]
             [ring.handler.dump :refer [handle-dump]]
             [compojure.core :refer [defroutes GET]]
-            [compojure.route :refer [not-found]])
+            [compojure.route :refer [not-found]]
+            [aero.core :as aero]
+            [clojure.java.io :as io]
+            [selmer.parser :as selmer])
   (:gen-class))
 
-(defn greet [req]
-  {:status 200 :body "Olha a cara do bis!" :headers {}})
+(def config
+  (aero/read-config (io/resource "clj_books/config.edn")))
 
-(defn goodbye [req]
-  {:status 200
-   :body "Goodbye, Cruel World!"
-   :headers {}})
+(def db-conn (:database-url config))
 
-(defn- yo-body
-  [name]
-  {:status 200
-        :body (str "Yo! " name)
-        :headers {}})
+(selmer/set-resource-path! (io/resource "templates"))
+;; (selmer.parser/set-resource-path! nil)
+;; (-> req :route-params :name) - a way to get the name from route-params in request
 
-(defn yo [req]
-  (let [name (get-in req [:route-params :name])]
-    (yo-body name)))
+
+(selmer/render-file "base.html" {:current-user "omendozar" :messages nil})
 
 (defn isbn [req]
   (let [isbn (get-in req [:route-params :isbn])]
     ))
 
-(defroutes app
+(defroutes routes
   (GET "/" [] greet)
   (GET "/goodbye" [] goodbye)
   (GET "/yo/:name" [] yo)
