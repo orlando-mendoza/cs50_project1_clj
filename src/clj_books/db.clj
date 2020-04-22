@@ -1,5 +1,6 @@
 (ns clj-books.db
-  (:require [clojure.java.jdbc :as db]))
+  (:require [clojure.java.jdbc :as db]
+            [yesql.core :refer [defqueries]]))
 
 ;; TODO: remove config and db-conn once you've done a wrap-db
 (def config
@@ -15,4 +16,4 @@
 
 (def db-spec (set-db-conn config))
 
-(db/query db-spec ["SELECT * FROM users"])
+(defqueries "clj-books/sql.slq" {:connection db-spec})
