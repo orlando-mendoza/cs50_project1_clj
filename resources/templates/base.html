@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Books Reviews</title>
+        <title>Clojure Books Reviews</title>
 
         <!-- Bootstrap CSS -->
         <link rel="stylesheet"
@@ -13,8 +13,8 @@
         <!-- Load icon library -->
         <script src="https://kit.fontawesome.com/2733a7a245.js" crossorigin="anonymous"></script>
 
-        <link rel="stylesheet" href="/public/css/main.css')}}"/>
-
+        <!-- link rel="stylesheet" href="public/css/main.css"/ -->
+        {% style "css/main.css" %}
 
     </head>
     <body>
@@ -22,11 +22,11 @@
 
             {% if current-user|not-empty  %}
 
-            {% include "includes/nav-logout.html" %}
+            {% include "templates/includes/nav-logout.html" %}
 
             {% else  %}
 
-            {% include "includes/nav.html" %}
+            {% include "templates/includes/nav.html" %}
 
             {% endif %}
 
@@ -42,7 +42,7 @@
             {% endblock %}
 
         </div>
-        {% include "includes/footer.html" %}
+        {% include "templates/includes/footer.html" %}
 
     </body>
 

@@ -14,25 +14,19 @@
 (def password-validator
   (validation-set
    (length-of :password
-              :within (range 7 101)
+              :within (range 3 101)
               :blank-message "is a required field"
               :message-fn (fn [type m attribute & args]
                             (if (= type :blank)
                               "is a required field"
-                              "Passwords must be between 7 and 100 characters long.")))))
+                              "Passwords must be between 3 and 100 characters long.")))))
+
+(def confirm-password-validator
+  (validation-set
+   (validate-by :confirm-password :password :message "Confirm password doesn't match")))
 
 (defn validate-signup [signup]
   "Validates the incoming signup map and returns a
    set of error messages for any invalid field
    Expects signup to have: :email, and :password."
-  ((compose-sets email-validator password-validator) signup))
-
-(validate-signup {:email "pijibaye@dot.com"})
-;; => {:password #{"is a required field"}}
-;; => {:password #{"can't be blank"}}
-(validate-signup {:email "pijibaye@dot.com" :password "123456"})
-
-(validate-signup {:username "El bis" :email "el.bis@dot.com" :password "1234"})
-;; => {:username #{"Only letters, numbers, dots and underscores alowed"}}
-(validate-signup {:username "omendozar" :email "el.bis@dot.@com" :password "1234567"})
-;; => {:email #{"the email's format is incorrect"}}
+  ((compose-sets email-validator password-validator confirm-password-validator) signup))

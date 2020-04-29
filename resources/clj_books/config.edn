@@ -1,11 +1,1 @@
-{:secrets #include #join ["/Users/omendoza/GitHub/Clojure/clj_books/.secrets.edn"]
-
- :dbtype   #ref [:secrets :dbtype]
- :dbname   #ref [:secrets :dbname]
- :host     #ref [:secrets :host]
- :user     #ref [:secrets :user]
- :password #ref [:secrets :password]
-
- :api-key  #ref [:secrets :api-key]
- :database-url #ref [:secrets :database-url]
- }
+{:secrets #include #join ["/Users/omendoza/GitHub/Clojure/clj_books/.secrets.edn"]}

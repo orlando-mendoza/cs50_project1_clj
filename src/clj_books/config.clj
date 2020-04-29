@@ -11,6 +11,7 @@
 
 (def db-spec (get-in config [:secrets :database-spec]))
 
+
 ;; set parser resource path
 ;;(set-resource-path! (io/resource "resource"))
 ;; (-> req :route-params :name) - a way to get the name from route-params in request

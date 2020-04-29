@@ -1,28 +1,28 @@
-{% extends "layout.html" %}
+{% extends "templates/base.html" %}
 
 {% block content %}
 
     <div class="row">
         <div class="col-md-12 text-center">
-            <h1>CS50 Books Reviews.</h1>
+            <h1>CS50 Books Reviews in Clojure</h1>
 
-            {% if session['username'] %}
+            {% if current-user|not-empty %}
                 <h3>Let's get started.</h3>
             {% else  %}
-                <p>Already registered? <a href=" {{ url_for('register') }}">Register</a></p>
+                <p>Already registered? <a href="/register">Register</a></p>
             {% endif %}
         </div>
         <div class="container-fluid">
             <p>
-            <form class="frmSearch" action="{{url_for('index')}}" method="POST" >
-                <select name="search_option" class="browser-default custom-select custom-select-lg mb-6">
+                <form class="frmSearch" action="/" method="POST" >
+                <select name="search-by" class="browser-default custom-select custom-select-lg mb-6">
                     <option value="isbn">ISBN</option>
                     <option value="title">Title</option>
                     <option value="author">Author</option>
                 </select>
-                <input type="text" placeholder="Search.." name="search_text">
+                <input type="text" placeholder="Search.." name="search-text">
                 <button type="submit"><i class="fa fa-search"></i></button>
-            </form>
+                </form>
             </p>
         </div>
 
@@ -41,10 +41,10 @@
                         {% for book in books %}
                         <tr>
                             <td scope="row">
-                                <a href="isbn/{{ book['isbn']}}">{{ book["isbn"] }}</a></td>
-                            <td>{{ book["title"] }}</td>
-                            <td>{{ book["author"] }}</td>
-                            <td>{{ book["year"] }}</td>
+                                <a href="isbn/:isbn">{{ book.isbn }}</a></td>
+                            <td>{{ book.title }}</td>
+                            <td>{{ book.author }}</td>
+                            <td>{{ book.year }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>

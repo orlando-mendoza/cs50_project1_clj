@@ -1,11 +1,12 @@
 (ns clj-books.core
-  (:require [clj-books.handler :refer [handle-index
-                                       handle-search-index
-                                       handle-isbn-details
-                                       handle-create-review
-                                       handle-api-isbn
-                                       login
-                                       register]])
+  (:require [clj-books.mvc.handler :refer [handle-index
+                                           handle-search-index
+                                           handle-isbn-details
+                                           handle-create-review
+                                           handle-api-isbn
+                                           login
+                                           register
+                                           register-submit]])
   (:require [ring.adapter.jetty :as jetty]
             [ring.middleware.reload :refer [wrap-reload]]
             [ring.middleware.params :refer [wrap-params]]
@@ -37,6 +38,7 @@
   (GET "/api/:isbn" [] handle-api-isbn)
   (GET "/login" [] login)
   (GET "/register" [] register)
+  (POST "/register" [] register-submit)
 
   (ANY "/request" [] handle-dump)
   (not-found "Page not found"))
@@ -65,3 +67,5 @@
 
 (.start server)
 (.stop server)
+
+(selmer/cache-off!)
