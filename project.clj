@@ -19,8 +19,7 @@
 
   :main ^:skip-aot clj-books.core
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}
-             :dev     {:main clj-books.core/-dev-main}}
+  :profiles {:uberjar {:aot :all}}
   :ring {:open-browser? false
          :stacktraces? false
          :auto-reload? true})

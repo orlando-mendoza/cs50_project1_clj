@@ -23,10 +23,13 @@
 
 (def confirm-password-validator
   (validation-set
-   (validate-by :confirm-password :password :message "Confirm password doesn't match")))
+   (validate-with-predicate :confirm-password
+                            #(= (:password %) (:confirm-password %))
+                            :message "Password confirmation doesn't match")))
 
 (defn validate-signup [signup]
   "Validates the incoming signup map and returns a
    set of error messages for any invalid field
    Expects signup to have: :email, and :password."
+  (clojure.pprint/pprint signup)
   ((compose-sets email-validator password-validator confirm-password-validator) signup))

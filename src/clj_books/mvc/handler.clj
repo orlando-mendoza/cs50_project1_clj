@@ -26,21 +26,18 @@
   ;; TODO
   {:status 200
    :headers {}
-   :body ""}
-  )
+   :body ""})
 
 (defn handle-create-review [req]
   ;; TODO
   {:status 200
    :headers {}
-   :body ""}
-  )
+   :body ""})
 
 (defn handle-api-isbn [req]
   {:status 200
    :headers {}
-   :body ""}
-  )
+   :body ""})
 
 (defn login [req]
   (parser/render-file "login.html" {:title "Login"}))
@@ -48,7 +45,9 @@
 (defn register [req]
   #_(clojure.pprint/pprint req)
   (let [current-user (get-in req [:session :current-user])]
-    (parser/render-file "templates/register.html" {:title "Register" :current-user current-user})))
+    (parser/render-file "templates/register.html"
+                        {:title "Register"
+                         :current-user current-user})))
 
 (defn register-submit [{form :form-params :as req}]
   (let [errors (v/validate-signup (keywordize-keys form))
@@ -56,13 +55,19 @@
         db (:clj-books/db req)]
     (if (empty? errors)
       (do
-        ;; inserts the new user in the database
-        (let [user-id (model/register-user! db first-name last-name email password)
-              books (model/select-books db)]
-          (parser/render-file "templates/index.html" {:title ""
-                                                      :messages {"success" "Your are successfully registered!"
-                                                                 "warning" "Please login to write a review"}
-                                                      :books books})))
+        (if (model/control-user-by-email db email)
+          (parser/render-file
+           "templates/register.html"
+           {:messages {"danger" "Email already registered, please provide another email!"}})
+           ;; inserts the new user in the database
+          (let [user-id (model/register-user! db first-name last-name email password)
+                books (model/select-books db)]
+            (parser/render-file
+             "templates/index.html"
+             {:title ""
+              :messages {"success" "Your are successfully registered!"
+                         "warning" "Please login to write a review"}
+                                                        :books books}))))
       (parser/render-file "templates/register.html" (assoc form :errors errors)))))
 
 
