@@ -24,5 +24,3 @@
 (defn get-book-cover [isbn]
   (let [book-info (get-googleapi-book-info isbn)]
     (get-in book-info [:volumeInfo :imageLinks :thumbnail] "Not Found")))
-
-(def book-ratings (get-good-reads-review "1416949658"))
