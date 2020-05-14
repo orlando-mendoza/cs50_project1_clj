@@ -1,38 +1,71 @@
 (ns clj-books.core
+  (:require [clj-books.mvc.handler :refer [handle-index
+                                           handle-search-index
+                                           handle-isbn-details
+                                           handle-create-review
+                                           handle-api-isbn
+                                           login
+                                           register
+                                           register-submit]])
   (:require [ring.adapter.jetty :as jetty]
             [ring.middleware.reload :refer [wrap-reload]]
+            [ring.middleware.params :refer [wrap-params]]
+            [ring.middleware.resource :refer [wrap-resource]]
+            [ring.middleware.session :refer [wrap-session]]
             [ring.handler.dump :refer [handle-dump]]
-            [compojure.core :refer [defroutes GET]]
-            [compojure.route :refer [not-found]])
+            [compojure.core :refer [defroutes GET POST ANY]]
+            [compojure.route :refer [not-found]]
+            [selmer.parser :as selmer])
+  (:use [clj-books.config])
   (:gen-class))
 
-(defn greet [req]
-  {:status 200 :body "Olha a cara do bis!" :headers {}})
+(defn wrap-db
+  "wraps the db-spec connection so every request will hace access
+  to the database information at clj-books.db"
+  [hdlr]
+  (fn [req]
+    (hdlr (assoc req :clj-books/db db-spec))))
 
-(defn goodbye [req]
-  {:status 200
-   :body "Goodbye, Cruel World!"
-   :headers {}})
+(defn wrap-server [hdlr]
+  (fn [req]
+    (assoc-in (hdlr req) [:headers "Server"] "Books Reviews")))
 
-(defn yo [req]
-  (let [name (get-in req [:route-params :name])]
-       {:status 200
-        :body (str "Yo! " name)
-        :headers {}}))
+(defroutes routes
+  (GET "/" [] handle-index)
+  (POST "/" [] handle-search-index)
+  (GET "/isbn/:isbn" [] handle-isbn-details)
+  (POST "/isbn/:isbn" [] handle-create-review)
+  (GET "/api/:isbn" [] handle-api-isbn)
+  (GET "/login" [] login)
+  (GET "/register" [] register)
+  (POST "/register" [] register-submit)
 
-(defn isbn [req]
-  (let [isbn (get-in req [:route-params :isbn])]
-    ))
-
-(defroutes app
-  (GET "/" [] greet)
-  (GET "/goodbye" [] goodbye)
-  (GET "/yo/:name" [] yo)
-  (GET "/request" [] handle-dump)
+  (ANY "/request" [] handle-dump)
   (not-found "Page not found"))
 
-(defn -main [port]
-  (jetty/run-jetty app {:port (Integer. port)}))
+(def app
+  (wrap-server
+   (wrap-reload
+    (wrap-resource
+     (wrap-db
+      (wrap-params
+       (wrap-session
+        routes {:cookie-attrs {:max-age 3600}})))
+     "static"))))
 
-(defn -dev-main [port]
+
+(defn -main [port]
   (jetty/run-jetty (wrap-reload #'app) {:port (Integer. port)}))
+
+#_(defn -dev-main [port]
+  (jetty/run-jetty (wrap-reload #'app) {:port (Integer. port)}))
+
+(defonce server (jetty/run-jetty #'app {:port 8000 :join? false}))
+
+
+;;(defonce server (run-server #'app {:port 5000 :join? false}))
+
+(.start server)
+(.stop server)
+
+(selmer/cache-off!)
