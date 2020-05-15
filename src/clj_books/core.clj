@@ -1,12 +1,14 @@
 (ns clj-books.core
   (:require [clj-books.mvc.handler :refer [handle-index
                                            handle-search-index
-                                           handle-isbn-details
+                                           handle-book-page
                                            handle-create-review
                                            handle-api-isbn
                                            login
+                                           login-submit
                                            register
-                                           register-submit]])
+                                           register-submit
+                                           logout]])
   (:require [ring.adapter.jetty :as jetty]
             [ring.middleware.reload :refer [wrap-reload]]
             [ring.middleware.params :refer [wrap-params]]
@@ -33,12 +35,14 @@
 (defroutes routes
   (GET "/" [] handle-index)
   (POST "/" [] handle-search-index)
-  (GET "/isbn/:isbn" [] handle-isbn-details)
+  (GET "/isbn/:isbn" [] handle-book-page)
   (POST "/isbn/:isbn" [] handle-create-review)
   (GET "/api/:isbn" [] handle-api-isbn)
   (GET "/login" [] login)
+  (POST "/login" [] login-submit)
   (GET "/register" [] register)
   (POST "/register" [] register-submit)
+  (GET "/logout" [] logout)
 
   (ANY "/request" [] handle-dump)
   (not-found "Page not found"))
@@ -69,3 +73,5 @@
 (.stop server)
 
 (selmer/cache-off!)
+
+                                        ; (clojure.pprint/print-table [{:a 1 :b 2 :c 3} {:a 4 :b 5 :c 6}])

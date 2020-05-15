@@ -1,35 +1,39 @@
-{% extends "base.html" %}
+{% extends "templates/base.html" %}
 
 {% block content %}
 
-    <div class="row">
-        <div class="col-md-6 offset-md-3">
-            <form name="login" action="" method="post" novalidate>
-                <fieldset class="form-group">
-                    <legend>{{title}}</legend>
-
-                    {{ form.hidden_tag() }}
-
-                    <p>
-                        {{ form.email.label }}</br>
-                        {{ form.email(size=35) }}
-                        {% for error in form.email.errors  %}
-                            <span class="error-message"> {{ error }}</span>
+<div class="container">
+    <form name="login" action="" method="post">
+        <fieldset class="form-group">
+            <legend>Login</legend>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="email">Email</label>
+                    <input id="email" class="form-control" name="email" required type="email" value="{{email}}">
+                    <ul class="errors">
+                        {% for e in errors.email  %}
+                        <li>{{e}}</li>
                         {% endfor %}
-                    </p>
-
-                    <p>
-                        {{ form.password.label }}</br>
-                        {{ form.password(size=15) }}
-                        {% for error in form.password.errors  %}
-                            <span class="error-message">{{ error }}</span>
-                        {% endfor%}
-                    </p>
-                    <p>
-                        {{ form.submit() }}
-                    </p>
-                </fieldset>
-            </form>
-        </div>
-    </div>
+                    </ul>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="password">Password</label></br>
+                    <input id="password" class="form-control" name="password" required type="password" value="">
+                    <ul class="errors">
+                        {% for e in errors.password  %}
+                        <li>{{e}}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <input id="submit" class="btn btn-primary" name="submit" type="submit" value="Login">
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
 {% endblock %}

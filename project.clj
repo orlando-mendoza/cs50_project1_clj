@@ -15,7 +15,8 @@
                  [buddy/buddy-hashers "1.4.0"]
                  [com.novemberain/validateur "2.6.0"]
                  [noir "1.3.0"]
-                 [org.clojure/data.json "1.0.0"]]
+                 [org.clojure/data.json "1.0.0"]
+                 [clj-http "3.10.1"]]
 
   :main ^:skip-aot clj-books.core
   :target-path "target/%s"
