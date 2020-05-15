@@ -1,48 +1,63 @@
-{% extends "layout.html" %}
-
+{% extends "templates/base.html" %}
 {% block content %}
 
 <div class="container bg-light row no-gutters">
     <h1>Book Details</h1>
     <hr>
     <div class="col" align="center">
-        <img src='{{ cover }}'>
+        <p>
+            <img src="{{ cover }}">
+        </p>
     </div>
     <div class="col h6" >
-        <p><h2> {{ book["title"] }}</h2></p>
-        <p>Author: {{ book["author"]}}</p>
-        <p>Year: {{ book["year"]}}</p>
-        <p>ISBN: {{ book["isbn"]}}</p>
-        <p>{{'{0:,}'.format(ratings_count)}} ratings on <a href="https://www.goodreads.com/">GoodReads.com</a></p>
-        Average Rating: {{avg_rating}}</br>
+        <p><h2> {{ book.title }}</h2></p>
+        <p>Author: {{ book.author }}</p>
+        <p>Year: {{ book.year }}</p>
+        <p>ISBN: {{ book.isbn }}</p>
+        <p>{{ratings-count|number-format:%,d}} ratings on <a href="https://www.goodreads.com/">GoodReads.com</a></p>
+        Average Rating: {{avg-rating}}</br>
     </div>
     <hr>
-    <div class="container col-md-8 offset-md-2" align="left">
-        <form name="review" action="{{ book['isbn']}}" method="POST" novalidate>
+    <div class="container col-md-8 offset-md-2">
+        <form name="review" action="{{ book.isbn }}" method="POST">
             <fieldset class="form-group">
-                <legend>{{title}}</legend>
+                <legend>Rate</legend>
 
-                {{ form.hidden_tag() }}
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="radio-inline">
+                            <input type="radio" name="optradio" value="1"> 1 &nbsp;
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="optradio" value="2"> 2 &nbsp;
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="optradio" value="3"> 3 &nbsp;
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="optradio" value="4"> 4 &nbsp;
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="optradio" value="5"> 5 &nbsp;
+                        </label>
+                    </div>
+                </div>
+                <div class="form-row form-group blue-border-focus">
+                            <label for="review">Write a review.</label>
+                            <textarea class="form-control" id="reviewtext" rows="5"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <p align="right">
+                            <input id="submit" class="btn btn-primary" name="submit" type="submit" value="Submit">
+                        </p>
+                    </div>
+                </div>
 
-                <p>
-                    {{form.rate.label}}
-                    {{form.rate}}
-                    <span class="error-message"> {{ error}} </span>
-                </p>
-                <p>
-                    {{form.review.label}}
-                    {{form.review}}
-                    {% for error in form.review.errors %}
-                    <span class="error-message"> {{ error }}</span>
-                    {% endfor %}
-                </p>
-                <p align="right">
-                    {{ form.submit()}}
-                </p>
             </fieldset>
         </form>
     </div>
-    {% if reviews != None %}
+    {% if reviews %}
     {% for review in reviews %}
 
     <div class='container col-md-10 offset-md-1 '>

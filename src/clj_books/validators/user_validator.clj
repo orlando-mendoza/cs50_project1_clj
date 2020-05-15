@@ -31,5 +31,4 @@
   "Validates the incoming signup map and returns a
    set of error messages for any invalid field
    Expects signup to have: :email, and :password."
-  (clojure.pprint/pprint signup)
   ((compose-sets email-validator password-validator confirm-password-validator) signup))

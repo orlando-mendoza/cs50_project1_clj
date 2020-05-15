@@ -32,10 +32,6 @@
         book-ratings (get-good-reads-review isbn)
         ratings-count (get book-ratings :work_ratings_count)
         avg-rating (get book-ratings :average_rating)]
-    (clojure.pprint/pprint req)
-    (clojure.pprint/pprint book)
-    (clojure.pprint/pprint book-cover)
-    (clojure.pprint/pprint ratings-count)
     (parser/render-file "templates/isbn.html" {:session (:session req)
                                                :book book
                                                :ratings-count ratings-count

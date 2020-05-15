@@ -5,6 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Clojure Books Reviews</title>
 
+        {% style "css/main.css" %}
+
         <!-- Bootstrap CSS -->
         <link rel="stylesheet"
               href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -13,14 +15,12 @@
         <!-- Load icon library -->
         <script src="https://kit.fontawesome.com/2733a7a245.js" crossorigin="anonymous"></script>
 
-        <!-- link rel="stylesheet" href="public/css/main.css"/ -->
-        {% style "css/main.css" %}
 
     </head>
     <body>
         <div class="container">
 
-            {% if current-user|not-empty  %}
+            {% if session.first_name|not-empty  %}
 
             {% include "templates/includes/nav-logout.html" %}
 
