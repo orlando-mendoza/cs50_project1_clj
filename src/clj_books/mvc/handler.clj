@@ -31,12 +31,14 @@
         book-cover (get-book-cover isbn)
         book-ratings (get-good-reads-review isbn)
         ratings-count (get book-ratings :work_ratings_count)
-        avg-rating (get book-ratings :average_rating)]
+        avg-rating (get book-ratings :average_rating)
+        reviews (model/select-reviews db isbn)]
     (parser/render-file "templates/isbn.html" {:session (:session req)
                                                :book book
                                                :ratings-count ratings-count
                                                :avg-rating avg-rating
                                                :cover book-cover
+                                               :reviews reviews
                                                :selmer/context "/"})))
 
 (defn handle-create-review [req]

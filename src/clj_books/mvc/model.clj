@@ -15,6 +15,14 @@
   ([db search-by search-text]
    (jdbc/query db [(str "SELECT * FROM books WHERE " search-by " iLIKE '%" search-text "%'")])))
 
+(defn select-reviews
+  "returns the reviews associated  with a isbn"
+  [db isbn]
+  (jdbc/query db ["SELECT first_name, last_name, rate, comment, date, isbn_no
+                   FROM reviews LEFT JOIN users ON users.id = reviews.user_id
+                   WHERE reviews.isbn_no = ?"
+                  isbn]))
+
 (defn register-user!
   "Adds a new user to the databse and returns the user id"
   [db first-name last-name email password]
