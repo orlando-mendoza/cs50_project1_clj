@@ -3,10 +3,11 @@
                                             get-book-cover]]
             [clj-books.mvc.model :as model]
             [clj-books.validators.user-validator :as v])
-  (:require [selmer.parser :as parser]
-            [ring.util.response :refer [response redirect]]
+  (:require [clojure.data.json :as json]
             [clojure.walk :refer [keywordize-keys]]
-            [buddy.hashers :as hashers])
+            [buddy.hashers :as hashers]
+            [ring.util.response :refer [response redirect]]
+            [selmer.parser :as parser])
   (:gen-class))
 
 (defn handle-index [req]
@@ -43,17 +44,15 @@
                                                :selmer/context "/"})))
 
 (defn handle-create-review [req]
-  (clojure.pprint/pprint req)
   (let [form (:form-params req)
         session (:session req)
         db (:clj-books/db req)
         {:strs [rate review]} form
         isbn (get-in req [:route-params :isbn])
         id (:id session)]
-    (clojure.pprint/pprint (str "Id is: " id))
-    (clojure.pprint/pprint (str "Session is: " session))
     (if (not (nil? id))
       ;; If user is logged in
+      ;; Checks if user has submitted a review previously
       (if (= (:count (first (model/select-reviews-by-user-id db id isbn))) 0)
         (do
           (model/insert-review db (Integer/parseInt rate) review id isbn)
@@ -63,14 +62,32 @@
         (-> (redirect (str "/isbn/" isbn))
             (merge {:flash {"danger"
                             "You have already reviewed this book. Only one review is permitted"}})))
+      ;; If user is not logged in
       (-> (redirect (str "/isbn/" isbn))
           (merge  {:flash {"warning"
                            "You need to log in to write a review"}})))))
 
 (defn handle-api-isbn [req]
-  {:status  200
-   :headers {}
-   :body    ""})
+  (let [db (:clj-books/db req)
+        search-by "isbn"
+        search-text (get-in req [:params :isbn])
+        isbn (get-in req [:params :isbn])
+        book (first (model/select-books db search-by search-text))]
+    (if (empty? book)
+      (compojure.route/not-found "ISBN Not Found")
+      (do
+        (let [book-ratings (get-good-reads-review isbn)
+              ratings-count (get book-ratings :work_ratings_count)
+              avg-rating (get book-ratings :average_rating)]
+          {:headers {"Content-type" "application/json"}
+           :status 200
+           :body (json/write-str {:title (:title book),
+                                  :author (:author book),
+                                  :year (:year book),
+                                  :isbn isbn,
+                                  :review_count ratings-count,
+                                  :average_score avg-rating})})))))
+
 
 (defn login [req]
   (parser/render-file "templates/login.html" {:title "Login"}))
