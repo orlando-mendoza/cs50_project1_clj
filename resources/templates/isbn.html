@@ -18,58 +18,80 @@
         Average Rating: {{avg-rating}}</br>
     </div>
     <hr>
-    <div class="container col-md-8 offset-md-2">
-        <form name="review" action="{{ book.isbn }}" method="POST">
-            <fieldset class="form-group">
-                <legend>Rate</legend>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="radio-inline">
-                            <input type="radio" name="optradio" value="1"> 1 &nbsp;
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" name="optradio" value="2"> 2 &nbsp;
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" name="optradio" value="3"> 3 &nbsp;
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" name="optradio" value="4"> 4 &nbsp;
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" name="optradio" value="5"> 5 &nbsp;
-                        </label>
-                    </div>
-                </div>
-                <div class="form-row form-group blue-border-focus">
-                            <label for="review">Write a review.</label>
-                            <textarea class="form-control" id="reviewtext" rows="5"></textarea>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <p align="right">
-                            <input id="submit" class="btn btn-primary" name="submit" type="submit" value="Submit">
-                        </p>
-                    </div>
-                </div>
-
-            </fieldset>
-        </form>
-    </div>
-    {% if reviews %}
-    {% for review in reviews %}
-
-    <div class='container col-md-10 offset-md-1 '>
-        <h6><font color="orange">Rating: {{review.rate}} of 5</font></h6>
-        <blockquote class="blockquote">
-            <p>{{review.comment}}</p>
-            <footer class="blockquote-footer">{{review.first_name}} {{review.last_name}} </footer>
-        </blockquote>
-    </div>
-
-    {% endfor %}
-    {% endif %}
 </div>
 
+<div class="container col-md-8 offset-md-2">
+    <form action="/isbn/{{book.isbn}}" method="post">
+        <fieldset class="form-group">
+            <legend>Your Review</legend>
+            <p>
+                <label for="rate">Rate</label>
+                <ul id="rate">
+                    <li>
+                        <input id="rate-0"
+                               name="rate"
+                               type="radio"
+                               value="1">
+                        <label for="rate-0">1</label>
+                    </li>
+                    <li>
+                        <input id="rate-1"
+                               name="rate"
+                               type="radio"
+                               value="2">
+                        <label for="rate-1">2</label>
+                    </li>
+                    <li>
+                        <input id="rate-2"
+                               name="rate"
+                               type="radio"
+                               value="3">
+                        <label for="rate-2">3</label>
+                    </li>
+                    <li>
+                        <input id="rate-3"
+                               name="rate"
+                               type="radio"
+                               value="4">
+                        <label for="rate-3">4</label>
+                    </li>
+                    <li>
+                        <input id="rate-4"
+                               name="rate"
+                               type="radio"
+                               value="5">
+                        <label for="rate-4">5</label>
+                    </li>
+                </ul>
+            </p>
+            <p>
+                <label for="review">Write a review.</label>
+                <textarea class="form-control"
+                          id="review"
+                          name="review"
+                          rows="5">
+                </textarea>
+            </p>
+            <p align="right">
+                <input type="submit"
+                       value="Submit"
+                       class="btn btn-primary">
+            </p>
+        </fieldset>
+    </form>
+</div>
+
+{% if reviews %}
+{% for review in reviews %}
+
+<div class="container col-md-10 offset-md-1">
+    <h6><font color="orange">Rating: {{review.rate}} of 5</font></h6>
+    <blockquote class="blockquote">
+        <p>{{review.comment}}</p>
+        <footer class="blockquote-footer">{{review.first_name}} {{review.last_name}} </footer>
+    </blockquote>
+</div>
+
+{% endfor %}
+{% endif %}
 {% endblock %}

@@ -30,8 +30,8 @@
 
             {% endif %}
 
-            {% if messages %}
-            {% for category, message in messages %}
+            {% if flash %}
+            {% for category, message in flash %}
             <div class="alert alert-{{category}}">
                 <p>{{ message }}</p>
             </div>
