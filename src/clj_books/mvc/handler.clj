@@ -4,7 +4,7 @@
             [clj-books.mvc.model :as model]
             [clj-books.validators.user-validator :as v])
   (:require [selmer.parser :as parser]
-            [ring.util.response :refer [redirect]]
+            [ring.util.response :refer [response redirect]]
             [clojure.walk :refer [keywordize-keys]]
             [buddy.hashers :as hashers])
   (:gen-class))
@@ -39,13 +39,33 @@
                                                :avg-rating avg-rating
                                                :cover book-cover
                                                :reviews reviews
+                                               :flash (:flash req)
                                                :selmer/context "/"})))
 
 (defn handle-create-review [req]
-  ;; TODO
-  {:status  200
-   :headers {}
-   :body    ""})
+  (clojure.pprint/pprint req)
+  (let [form (:form-params req)
+        session (:session req)
+        db (:clj-books/db req)
+        {:strs [rate review]} form
+        isbn (get-in req [:route-params :isbn])
+        id (:id session)]
+    (clojure.pprint/pprint (str "Id is: " id))
+    (clojure.pprint/pprint (str "Session is: " session))
+    (if (not (nil? id))
+      ;; If user is logged in
+      (if (= (:count (first (model/select-reviews-by-user-id db id isbn))) 0)
+        (do
+          (model/insert-review db (Integer/parseInt rate) review id isbn)
+          (-> (redirect (str "/isbn/" isbn))
+              (merge {:flash {"success"
+                              "Thanks for your review"}})))
+        (-> (redirect (str "/isbn/" isbn))
+            (merge {:flash {"danger"
+                            "You have already reviewed this book. Only one review is permitted"}})))
+      (-> (redirect (str "/isbn/" isbn))
+          (merge  {:flash {"warning"
+                           "You need to log in to write a review"}})))))
 
 (defn handle-api-isbn [req]
   {:status  200
@@ -69,10 +89,10 @@
               (merge next-session)))
 
         ;; Otherwise
-        (parser/render-file "templates/login.html" {:messages
+        (parser/render-file "templates/login.html" {:flash
                                                     {"danger"
                                                      "Incorrect password"}}))
-      (parser/render-file "templates/login.html" {:messages
+      (parser/render-file "templates/login.html" {:flash
                                                   {"danger"
                                                    "Email incorrect!"}}))))
 
@@ -94,15 +114,15 @@
       (do
         (if (model/control-user-by-email db email)
           (parser/render-file
-            "templates/register.html"
-            {:messages {"danger" "Email already registered, please provide another email!"}})
+           "templates/register.html"
+           {:flash {"danger" "Email already registered, please provide another email!"}})
           ;; inserts the new user in the database
           (let [user-id (model/register-user! db first-name last-name email password)
                 books (model/select-books db)]
             (parser/render-file
-              "templates/index.html"
-              {:title    ""
-               :messages {"success" "Your are successfully registered!"
-                          "warning" "Please login to write a review"}
-               :books    books}))))
+             "templates/index.html"
+             {:title    ""
+              :flash {"success" "Your are successfully registered!"
+                      "warning" "Please login to write a review"}
+              :books    books}))))
       (parser/render-file "templates/register.html" (assoc form :errors errors)))))

@@ -23,4 +23,4 @@
 
 (defn get-book-cover [isbn]
   (let [book-info (get-googleapi-book-info isbn)]
-    (get-in book-info [:volumeInfo :imageLinks :thumbnail] "Not Found")))
+    (get-in book-info [:volumeInfo :imageLinks :thumbnail] "/img/img-not-found.png")))

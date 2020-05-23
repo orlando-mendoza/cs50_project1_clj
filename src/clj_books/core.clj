@@ -1,4 +1,5 @@
 (ns clj-books.core
+  (:use ring.middleware.flash)
   (:require [clj-books.mvc.handler :refer [handle-index
                                            handle-search-index
                                            handle-book-page
@@ -54,7 +55,8 @@
      (wrap-db
       (wrap-params
        (wrap-session
-        routes {:cookie-attrs {:max-age 3600}})))
+        (wrap-flash
+         routes) {:cookie-attrs {:max-age 3600}})))
      "static"))))
 
 
@@ -62,7 +64,7 @@
   (jetty/run-jetty (wrap-reload #'app) {:port (Integer. port)}))
 
 #_(defn -dev-main [port]
-  (jetty/run-jetty (wrap-reload #'app) {:port (Integer. port)}))
+    (jetty/run-jetty (wrap-reload #'app) {:port (Integer. port)}))
 
 (defonce server (jetty/run-jetty #'app {:port 8000 :join? false}))
 
@@ -74,4 +76,4 @@
 
 (selmer/cache-off!)
 
-                                        ; (clojure.pprint/print-table [{:a 1 :b 2 :c 3} {:a 4 :b 5 :c 6}])
+;; (clojure.pprint/print-table [{:a 1 :b 2 :c 3} {:a 4 :b 5 :c 6}])
